@@ -1,71 +1,64 @@
-#include <iostream>
-#include <vector>
-#include <thread>
-#include <chrono>
+#include <iostream> // esto hace que podamos usar cout y cin
 
-using namespace std;
+#include <list> // esto hace que podamos usar list
 
-struct Caballo {
+using namespace std; // esto hace que no tengamos que poner std:: antes de cada funcion
+
+struct Carrera { // declaramos la estructura de la carrera
+    int cantCaballos;
+    int canMetrosPista;
+    int cantVueltas;
+};
+
+struct Caballo { // declaramos la estructura de los caballos
     string nombre;
-    string color;
     int numero;
     int posicion;
 };
 
-void iniciarCarrera(vector<Caballo>& caballos) {
-    int meta = 100;
-
-    while (true) {
-        for (auto& caballo : caballos) {
-            int avance = rand() % 3 + 1;
-            caballo.posicion += avance;
-
-            // Verificar si el caballo llegó a la meta
-            if (caballo.posicion >= meta) {
-                cout << "¡El caballo " << caballo.nombre << " ganó la carrera! ¡Felicitaciones!" << endl;
-                return;
-            }
-        }
-
-        // Imprimir pista y caballos
-        system("clear");
-        for (auto& caballo : caballos) {
-            cout << "Pista del caballo " << caballo.nombre << ": ";
-            for (int i = 0; i < meta; i++) {
-                if (caballo.posicion == i) {
-                    cout << caballo.nombre[0] << caballo.numero;
-                } else {
-                    cout << "-";
-                }
-            }
-            cout << endl;
-        }
-
-        // Esperar medio segundo antes de actualizar de nuevo
-        this_thread::sleep_for(chrono::milliseconds(500));
-    }
+void pedirDatosCarrera(Carrera& carrera) { // & para usar la estructura original
+    cout << "Ingrese la cantidad de caballos que participarán: ";
+    cin >> carrera.cantCaballos;
+    cout << "Ingrese la cantidad de metros de la pista: ";
+    cin >> carrera.canMetrosPista;
+    cout << "Ingrese la cantidad de vueltas: ";
+    cin >> carrera.cantVueltas;
 }
 
-int main() {
-    srand(time(NULL));
+void pedirDatosCaballo(Caballo& caballo){ // & para usar la estructura original
+    cout << "Ingrese el nombre del caballo: ";
+    cin >> caballo.nombre;
+    cout << "Ingrese el numero del caballo: ";
+    cin >> caballo.numero;
+}
 
-    int numCaballos;
-    cout << "Ingrese la cantidad de caballos que participarán: ";
-    cin >> numCaballos;
+/*
+pediremos al usuario:
+    al inicio:
+        cuantos caballos participaran (int)
+        _cantidad de metros de la pista (int)
+        _cantidad de vueltas (int)
+    por cada caballo:
+        nombre (string)
+        numero (int)
+    se lanza la Funcion inicializarCarrera():
+        esta 
 
-    vector<Caballo> caballos;
-    for (int i = 1; i <= numCaballos; i++) {
-        Caballo caballo;
-        cout << "Ingrese el nombre del caballo " << i << ": ";
-        cin >> caballo.nombre;
-        cout << "Ingrese el color del caballo " << i << ": ";
-        cin >> caballo.color;
-        caballo.numero = i;
-        caballo.posicion = 0;
-        caballos.push_back(caballo);
-    }
+*/
+// Funcion para iniciar la carrera
+// Parametros:
+// 
+// podria ser cantidad de vueltas y apuestas
 
-    iniciarCarrera(caballos);
+int main(){
+    Carrera carrera;
+    list<Caballo> caballos;
+
+    pedirDatosCarrera(carrera);
+
+    cout << carrera.cantCaballos << endl;
+    cout << carrera.canMetrosPista << endl;
+    cout << carrera.cantVueltas << endl;
 
     return 0;
 }
