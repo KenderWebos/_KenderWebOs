@@ -20,6 +20,9 @@ struct Caballo { // declaramos la estructura de los caballos
     int posicion;
 };
 
+Carrera carrera; // declaramos la estructura carrera
+vector<Caballo> caballos; // declaramos la lista de caballos
+
 // void pedirDatosCarrera(Carrera& carrera) { // & para usar la estructura original
 //     cout << "Ingrese la cantidad de caballos que participarán: ";
 //     cin >> carrera.cantCaballos;
@@ -47,7 +50,7 @@ int getRandomNumber(int min, int max){
     return random;
 }
 
-void avanceCaballo(int index){
+void avanceCaballo(int index, vector<Caballo>& caballos, Carrera carrera){
     int avance = getRandomNumber(0, 4);
     caballos[index].posicion += avance;
 }
@@ -57,25 +60,8 @@ void iniciarCarrera(vector<Caballo>& caballos, Carrera carrera){
         system("clear");
         cout << ">> 🐴 Carrera de caballos 🐴 <<" << endl;
 
-        // for(auto& caballo : caballos){
-        //     int avance = getRandomNumber(0, 4);
-        //     caballo.posicion += avance;
-
-        //     if(caballo.posicion >= carrera.canMetrosPista){
-        //         system("clear");
-        //         cout << ">> 🐴 Carrera de caballos 🐴 <<" << endl;
-        //         cout << "🎉✨¡Felicitaciones!✨🎉"<<endl;
-        //         cout << "¡El caballo 🐴 " << caballo.nombre << " ganó la carrera!" << endl;
-        //         return;
-        //     }            
-        //     for(int i = 0; i < caballo.posicion; i++){
-        //         cout << "-";
-        //     }
-        //     cout << caballo.nombre << " 🐎: " << caballo.posicion << endl;
-        // }
-
-        for(int i = 0; i < caballos.lenght; i++){
-            avanceCaballo(i);
+        for(int i = 0; i < caballos.size(); i++){
+            avanceCaballo(i, caballos, carrera );
 
             if(caballos[i].posicion >= carrera.canMetrosPista){
                 system("clear");
@@ -85,7 +71,8 @@ void iniciarCarrera(vector<Caballo>& caballos, Carrera carrera){
                 return;
             }
             
-            for(int i = 0; i < caballos[i].posicion; i++){
+            for(int j = 0; j < caballos[i].posicion; j++){
+                
                 cout << "-";
             }
             cout << caballos[i].nombre << " 🐎: " << caballos[i].posicion << endl;
@@ -107,7 +94,6 @@ pediremos al usuario:
     
     una vez tengamos todos los datos:
         iniciamos la carrera con la funcion iniciarCarrera();
-
     ideas:
     1. apuestas
     2. colores
@@ -117,8 +103,6 @@ podria ser cantidad de vueltas y apuestas
 */
 
 int main(){
-    Carrera carrera; // declaramos la estructura carrera
-    vector<Caballo> caballos; // declaramos la lista de caballos
 
     pedirDatosCarrera(carrera); // pedimos los datos base de la carrera
 
