@@ -47,29 +47,48 @@ int getRandomNumber(int min, int max){
     return random;
 }
 
+void avanceCaballo(int index){
+    int avance = getRandomNumber(0, 4);
+    caballos[index].posicion += avance;
+}
+
 void iniciarCarrera(vector<Caballo>& caballos, Carrera carrera){
     while(true){
         system("clear");
         cout << ">> 🐴 Carrera de caballos 🐴 <<" << endl;
 
-        for(auto& caballo : caballos){
-            int avance = getRandomNumber(0, 4);
-            caballo.posicion += avance;
+        // for(auto& caballo : caballos){
+        //     int avance = getRandomNumber(0, 4);
+        //     caballo.posicion += avance;
 
-            if(caballo.posicion >= carrera.canMetrosPista){
+        //     if(caballo.posicion >= carrera.canMetrosPista){
+        //         system("clear");
+        //         cout << ">> 🐴 Carrera de caballos 🐴 <<" << endl;
+        //         cout << "🎉✨¡Felicitaciones!✨🎉"<<endl;
+        //         cout << "¡El caballo 🐴 " << caballo.nombre << " ganó la carrera!" << endl;
+        //         return;
+        //     }            
+        //     for(int i = 0; i < caballo.posicion; i++){
+        //         cout << "-";
+        //     }
+        //     cout << caballo.nombre << " 🐎: " << caballo.posicion << endl;
+        // }
+
+        for(int i = 0; i < caballos.lenght; i++){
+            avanceCaballo(i);
+
+            if(caballos[i].posicion >= carrera.canMetrosPista){
                 system("clear");
                 cout << ">> 🐴 Carrera de caballos 🐴 <<" << endl;
                 cout << "🎉✨¡Felicitaciones!✨🎉"<<endl;
-                cout << "¡El caballo 🐴 " << caballo.nombre << " ganó la carrera!" << endl;
+                cout << "¡El caballo 🐴 " << caballos[i].nombre << " ganó la carrera!" << endl;
                 return;
             }
-
-            // el programa debe imprimir la cantidad de lineas de avance que lleva el caballo tipo 5 = ----- o 10 = ----------
             
-            for(int i = 0; i < caballo.posicion; i++){
+            for(int i = 0; i < caballos[i].posicion; i++){
                 cout << "-";
             }
-            cout << caballo.nombre << " 🐎: " << caballo.posicion << endl;
+            cout << caballos[i].nombre << " 🐎: " << caballos[i].posicion << endl;
         }
 
         usleep(500000);
@@ -80,7 +99,7 @@ void iniciarCarrera(vector<Caballo>& caballos, Carrera carrera){
 pediremos al usuario:
     al inicio:
         cuantos caballos participaran (int)
-        _cantidad de metros de la pista (int)
+        cantidad de metros de la pista (int)
         _cantidad de vueltas (int)
     por cada caballo:
         nombre (string)
@@ -89,7 +108,10 @@ pediremos al usuario:
     una vez tengamos todos los datos:
         iniciamos la carrera con la funcion iniciarCarrera();
 
-
+    ideas:
+    1. apuestas
+    2. colores
+    3. animaciones graficas
 /*
 podria ser cantidad de vueltas y apuestas
 */
@@ -107,13 +129,6 @@ int main(){
         pedirDatosCaballo(caballo);
         caballos.push_back(caballo);
     }
-
-    cout << ">> CARRERA << " << endl;
-    cout << carrera.cantCaballos << endl;
-    cout << carrera.canMetrosPista << endl;
-    cout << carrera.cantVueltas << endl;
-    cout << endl;
-    cout << ">> CABALLOS <<" << endl;
 
     iniciarCarrera(caballos, carrera);
 
