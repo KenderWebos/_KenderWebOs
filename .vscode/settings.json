@@ -3,6 +3,15 @@
         "thread": "cpp",
         "ostream": "cpp",
         "iostream": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "atomic": "cpp",
+        "forward_list": "cpp",
+        "ios": "cpp",
+        "list": "cpp",
+        "system_error": "cpp",
+        "vector": "cpp",
+        "xiosbase": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp"
     }
 }

@@ -19,6 +19,7 @@ struct Caballo // no es directamente un caballo, es un caballo en la carrera
 {              // declaramos la estructura de los caballos
     string nombre;
     int numero;
+    int vueltas;
     int posicion;
     int carril;
 };
@@ -58,13 +59,20 @@ void pedirDatosCaballo(int index)
     printw(">> Datos del caballo [%d] <<\n", index + 1);
     refresh();
 
-    printw("Ingrese el nombre del caballo %i: ", index + 1);
-    refresh();
-    scanw("%s", &caballo.nombre[0]);
+    // printw("Ingrese el nombre del caballo %i: ", index + 1);
+    // refresh();
+    // scanw("%s", &caballo.nombre);
 
     printw("Ingrese el numero del caballo %i: ", index + 1);
     refresh();
     scanw("%d", &caballo.numero);
+
+    // char aux[50];
+    // scanw("%s", aux);
+    // caballo.nombre = aux;
+
+    caballo.posicion = 0;
+    caballo.vueltas = 0;
 
     caballo.carril = carrilLibre;
     carrilLibre++;
@@ -163,6 +171,17 @@ void *horseMainProcess(void *param)
     //     cout << caballos[i].nombre << " 🐎: " << caballos[i].posicion << endl;
     // }
 
+    //deb
+    // void dibujarCaballos()
+    // {
+    //     clear();
+    //     for (int i = 0; i < numCaballos; i++)
+    //     {
+    //         mvprintw(i + 1, posiciones[i], "Caballo %d", i + 1);
+    //     }
+    //     refresh();
+    // }
+
     sleep(1);
     clear();
 
@@ -204,7 +223,7 @@ void printClock()
         int minutes = timeinfo->tm_min;
         int seconds = timeinfo->tm_sec;
 
-        // Obtener el tamaño de la ventana
+        // Obtener el tamano de la ventana
         int maxRows, maxCols;
         getmaxyx(stdscr, maxRows, maxCols);
 
@@ -224,23 +243,23 @@ void printClock()
 
 void printStats()
 {
-    int maxRows, maxCols;
-    getmaxyx(stdscr, maxRows, maxCols);
+    while (true)
+    {
+        clear();
 
-    // mvprintw(0, 0, "Contador: %d", contador);                      // Esquina superior izquierda
-    // mvprintw(0, maxCols - 12, "Contador: %d", contador);           // Esquina superior derecha
-    // mvprintw(maxRows - 1, 0, "Contador: %d", contador);            // Esquina inferior izquierda
-    // mvprintw(maxRows - 1, maxCols - 12, "Contador: %d", contador); // Esquina inferior derecha
+        printw("> Estadisticas < \n");
 
-    mvprintw(0, (maxCols / 2) - 12, "✨ < Mis estadisticas > ✨");
-    mvprintw(1, (maxCols / 2) - 12, "Caballos participando: %d", carrera.cantCaballos);
-    mvprintw(2, (maxCols / 2) - 12, "Metros de la pista: %d", carrera.canMetrosPista);
-    mvprintw(3, (maxCols / 2) - 12, "Vueltas de la carrera: %d", carrera.cantVueltas);
-    mvprintw(4, (maxCols / 2) - 12, "✨ < Fin estadisticas > ✨");
+        for (int i = 0; i < carrera.cantCaballos; i++)
+        {
+            printw("Caballo %c: Vueltas %i - %i Metros\n", letras[i+1], caballos[i].vueltas, caballos[i].posicion);
+        }
 
-    refresh();
+        printw("Totales: %d vueltas - %d Metros\n", carrera.cantVueltas, carrera.canMetrosPista);
 
-    sleep(10);
+        refresh();
+            
+        sleep(1);
+    }
 }
 
 // void iniciarCarrera()
@@ -286,24 +305,26 @@ int main()
 
     printw("> tamos listeilor con los datos \n");
 
-    for (int i = 0; i < carrera.cantCaballos; i++) // iniciamos la rutina de carrera dando hilo a cada proceso del a funcion
-    {
-        pthread_t thread;
-        int threadParam = i+1;
-        threads.push_back(thread);
+    // for (int i = 0; i < carrera.cantCaballos; i++) // iniciamos la rutina de carrera dando hilo a cada proceso de la funcion
+    // {
+    //     pthread_t thread;
+    //     int threadParam = i + 1;
+    //     threads.push_back(thread);
 
-        int result = pthread_create(&threads[i], NULL, horseMainProcess, (void *)&threadParam);
+    //     int result = pthread_create(&threads[i], NULL, horseMainProcess, &i);
 
-        if (result != 0)
-        {
-            printw("Error al crear el hilo\n");
-            refresh();
-            endwin();
-            return 1;
-        }
-    }
+    //     // pthread_create(&hebras[i], nullptr, correrCarrera, &i);
 
-    // printStats();
+    //     if (result != 0)
+    //     {
+    //         printw("Error al crear el hilo\n");
+    //         refresh();
+    //         endwin();
+    //         return 1;
+    //     }
+    // }
+
+    printStats();
 
     // printClock();
 
