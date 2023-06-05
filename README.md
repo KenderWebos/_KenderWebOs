@@ -1,51 +1,37 @@
-# _KenderWebOs
-a simple repo for the Sistemas Operativos UCSC cource.
+# Carrera de Caballos 🐴
 
-![Imagen de sistemas operativos](https://www.areatecnologia.com/informatica/imagenes/so.jpg)
+Este programa simula una carrera de caballos en la terminal utilizando la biblioteca ncurses en C++.
 
-g++ final.cpp -o uwu -lncurses -lpthread -DMUTEX
+## Requisitos previos
 
-Nombre del Proyecto
-Breve descripción o introducción del proyecto.
+Es necesario tener instalada la biblioteca ncurses en el sistema antes de compilar y ejecutar el programa. Es posible instalarla en sistemas basados en Debian ejecutando el siguiente comando:
 
-Tabla de contenidos
-Características
-Requisitos
-Instalación
-Uso
-Contribución
-Licencia
-Características
-Describir las principales características o funcionalidades del proyecto.
+> sudo apt-get install libncurses5-dev libncursesw5-dev
 
-Característica 1
-Característica 2
-Característica 3
-Requisitos
-Indicar los requisitos previos para poder utilizar o instalar el proyecto.
+## Compilación y ejecución
 
-Requisito 1
-Requisito 2
-Requisito 3
-Instalación
-Explicar los pasos necesarios para instalar y configurar el proyecto.
+El programa puede ser compilado utilizando el siguiente comando:
 
-Paso 1
-Paso 2
-Paso 3
-Uso
-Proporcionar ejemplos o instrucciones sobre cómo utilizar el proyecto.
+> g++ final.cpp -o final -lncurses -lpthread -DMUTEX
 
-bash
-Copy code
-comando-de-ejemplo
-Contribución
-Explicar cómo otros desarrolladores o colaboradores pueden contribuir al proyecto.
+Luego, para ejecutar el programa, utilice el siguiente comando:
 
-Fork del repositorio
-Crear una rama (git checkout -b feature/nueva-funcionalidad)
-Realizar cambios y hacer commit (git commit -am 'Agregar nueva funcionalidad')
-Hacer push a la rama (git push origin feature/nueva-funcionalidad)
-Abrir una solicitud de extracción en GitHub
-Licencia
-Indicar la licencia bajo la cual se distribuye el proyecto y añadir el texto completo de la licencia si es necesario.
+> final
+
+## Uso del programa
+
+El programa solicitara los siguientes datos de la carrera:
+
+- Cantidad de caballos que participarán (entre 2 y 7).
+- Cantidad de metros de la pista (30, 40, 50 o 60 metros).
+- Cantidad de vueltas a la pista (entre 1 y 4).
+
+Luego, para cada caballo, se debe ingresar el número del caballo.
+
+Una vez ingresados los datos, se dará comienzo a la simulación de la carrera en la terminal. Los caballos se moverán aleatoriamente en la pista y se mostrarán las estadísticas en tiempo real, incluyendo el tiempo transcurrido, las vueltas y metros recorridos por cada caballo.
+
+## Créditos
+
+Este programa fue creado por Kevin Campos, Maritxiu Castro y Debora Huerta como parte del curso de Sistemas Operativos de la UCSC.
+
+![Imagen de sistemas operativos](https://pbs.twimg.com/media/DMPLIikU8AA6_GR?format=jpg&name=small)

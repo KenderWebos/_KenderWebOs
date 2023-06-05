@@ -59,9 +59,9 @@ void pedirDatosCaballo(int index)
     printw(">> Datos del caballo [%d] <<\n", index + 1);
     refresh();
 
-    // printw("Ingrese el nombre del caballo %i: ", index + 1);
-    // refresh();
-    // scanw("%s", &caballo.nombre);
+    printw("Ingrese el nombre del caballo %i: ", index + 1);
+    refresh();
+    scanw("%s", &caballo.nombre);
 
     printw("Ingrese el numero del caballo %i: ", index + 1);
     refresh();

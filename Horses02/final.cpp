@@ -6,6 +6,9 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include <mutex>
+
+#include<bits/stdc++.h>
 
 using namespace std;
 
@@ -25,9 +28,16 @@ struct Caballo // no es directamente un caballo, es un caballo en la carrera
     int carril;
 };
 
+struct Params
+{
+    int index;
+};
+
 #ifdef MUTEX
 pthread_mutex_t pantalla;
 #endif
+
+std::mutex pantallaX;
 
 Carrera carrera;          // declaramos la estructura carrera
 vector<Caballo> caballos; // declaramos la lista de caballos
@@ -36,22 +46,86 @@ vector<pthread_t> threads;
 
 int carrilLibre = 0;
 
+int padding = 20;
+
 char letras[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 void pedirDatosCarrera()
 {
-    printw("Ingrese la cantidad de caballos que participarán: ");
-    refresh();
-    scanw("%d", &carrera.cantCaballos);
+    int minCaballos = 2;
+    int maxCaballos = 7;
+    int cantidadCaballos;
 
-    printw("Ingrese la cantidad de metros de la pista: ");
-    refresh();
-    scanw("%d", &carrera.canMetrosPista);
+    do
+    {
+        printw("Ingrese la cantidad de caballos que participarán (entre %d y %d): ", minCaballos, maxCaballos);
+        refresh();
+        scanw("%d", &cantidadCaballos);
 
-    printw("Ingrese la cantidad de vueltas a la pista: ");
-    refresh();
-    scanw("%d", &carrera.cantVueltas);
+        if (cantidadCaballos >= minCaballos && cantidadCaballos <= maxCaballos)
+        {
+            carrera.cantCaballos = cantidadCaballos;
+            break;
+        }
+        else
+        {
+            clear();
+            printw("Error: La cantidad de caballos debe ser entre %d y %d.\n\n", minCaballos, maxCaballos);
+            refresh();
+        }
+    } while (true);
+
+    //------------------------------------------------------------------------------------------------------------------------------
+    clear();
+    std::vector<int> longitudesValidas = {30, 40, 50, 60};
+    int longitudPista;
+
+    do
+    {
+        
+        printw("Ingrese la cantidad de metros de la pista (30, 40, 50 o 60 metros): ");
+        refresh();
+        scanw("%d", &longitudPista);
+
+        if (std::find(longitudesValidas.begin(), longitudesValidas.end(), longitudPista) != longitudesValidas.end())
+        {
+            carrera.canMetrosPista = longitudPista;
+            break;
+        }
+        else
+        {
+            clear();
+            printw("Error: La cantidad de metros de la pista debe ser 30, 40, 50 o 60.\n");
+            refresh();
+        }
+    } while (true);
+
+    //------------------------------------------------------------------------------------------------------------------------------
+
+    int cantidadvueltas;
+    int minvuelta=1;
+    int maxvuelta=4;
+    clear();
+
+    do
+    {
+        printw("Ingrese la cantidad de vueltas a la pista, debe ser entre 1 y 4: ");
+        refresh();
+        scanw("%d", &cantidadvueltas);
+        if (cantidadvueltas >= minvuelta && cantidadvueltas <= maxvuelta)
+        {
+            carrera.cantVueltas = cantidadvueltas;
+            break;
+        }
+        else
+        {
+            clear();
+            printw("Error: La cantidad de vueltas debe ser entre 1 y 4.\n\n");
+            refresh();
+        }
+
+    } while (true);
 
     clear();
 }
@@ -80,18 +154,6 @@ void pedirDatosCaballo(int index)
     caballos.push_back(caballo);
 
     clear();
-}
-
-void comprobarGanador()
-{
-    // if (caballos[i].posicion >= carrera.canMetrosPista)
-    // {
-    //     system("clear");
-    //     cout << ">> 🐴 Carrera de caballos 🐴 <<" << endl;
-    //     cout << "🎉✨¡Felicitaciones!✨🎉" << endl;
-    //     cout << "¡El caballo 🐴 " << caballos[i].nombre << " ganó la carrera!" << endl;
-    //     return;
-    // }
 }
 
 void printTitle()
@@ -144,6 +206,23 @@ void printTitle2()
     clear();
 }
 
+void printUI()
+{
+    const char *title = R"(
+                                                          :::::::::      :::      ::::::::  :::::::::: 
+                                                         :+:    :+:   :+: :+:   :+:    :+: :+:         
+                                                        +:+    +:+  +:+   +:+  +:+        +:+          
+                                                       +#++:++#:  +#++:++#++: +#+        +#++:++#      
+                                                      +#+    +#+ +#+     +#+ +#+        +#+            
+                                                     #+#    #+# #+#     #+# #+#    #+# #+#             
+                                                    ###    ### ###     ###  ########  ##########       
+)";
+    mvprintw(0, 0, "%s", title);
+    refresh();
+
+    sleep(4);
+}
+
 int getRandomNumber(int min, int max)
 {
     int random = rand() % max + min;
@@ -152,28 +231,42 @@ int getRandomNumber(int min, int max)
 
 void *horseMainProcess(void *param)
 {
-    int index = 0;
-    // Caballo caballo = caballos[*(int *)param];
+    // int index = param.index;
 
-    printw("Soy un caballo y estoy vivoooo!! soy el numero {%d}! \n", *(int *)param);
-    refresh();
+    Params *p = (Params *)param;
+    int index = p->index;
 
-#ifdef MUTEX
-    pthread_mutex_lock(&pantalla);
-#endif
+    Caballo caballo = caballos[index];
 
     while (true)
     {
+        if (caballos[index].posicion >= carrera.canMetrosPista * carrera.cantVueltas)
+        {
+            pantallaX.lock();
+            clear();
+            mvprintw(0, 0, "Caballo %c: Es el ganador !!\n", letras[index]);
+            mvprintw(2, 0, "precione cualquier tecla para continuar...\n");
+
+            getch();
+
+            printTitle();
+
+            endwin();
+        }
+
+        pantallaX.lock();
+
         caballos[index].posicion += getRandomNumber(0, 3);
+        caballos[index].vueltas = caballos[index].posicion / carrera.canMetrosPista;
 
-        mvprintw(20, 20 + caballos[index].posicion, "%c", letras[index]);
+        mvprintw(index + padding, 0 + caballos[index].posicion, "%c", letras[index]); // sacar el modulo de la posicion para que no se salga de la pantalla
+        // mvprintw(index + padding, 0 + caballos[index].posicion%carrera.canMetrosPista, "%c", letras[index]); // sacar el modulo de la posicion para que no se salga de la pantalla
+
         refresh();
-        sleep(1);
-    }
 
-#ifdef MUTEX
-    pthread_mutex_unlock(&pantalla);
-#endif
+        pantallaX.unlock();
+        usleep(1000000 / 2);
+    }
 
     return NULL;
 }
@@ -187,10 +280,14 @@ void printChrono()
 
     while (true)
     {
+        pantallaX.lock();
+
         mvprintw(maxRows - 1, (maxCols / 2) - 12, "Tiempo transcurrido: %ds", contador);
 
         refresh();
         contador++;
+
+        pantallaX.unlock();
         sleep(1);
     }
 }
@@ -199,11 +296,7 @@ void printClock()
 {
     while (true)
     {
-
-#ifdef MUTEX
-        pthread_mutex_lock(&pantalla);
-#endif
-        clear(); // Limpiar la pantalla
+        pantallaX.lock();
 
         // Obtener la hora actual del sistema
         time_t now = time(0);
@@ -219,20 +312,17 @@ void printClock()
         getmaxyx(stdscr, maxRows, maxCols);
 
         // Calcular las coordenadas para imprimir el reloj en la parte inferior central
-        int clockRow = maxRows - 2;     // Fila
-        int clockCol = maxCols / 2 - 4; // Columna
+        int clockRow = maxRows - 2;      // Fila
+        int clockCol = maxCols / 2 - 12; // Columna
 
         // Imprimir el emoji de reloj y la hora en la posición calculada
         mvprintw(clockRow, clockCol, "Reloj -> %02d:%02d:%02d", hours, minutes, seconds);
 
         refresh(); // Actualizar la pantalla
 
-        // Pausar el programa durante 1 segundo
-        napms(1000);
+        pantallaX.unlock();
 
-#ifdef MUTEX
-        pthread_mutex_unlock(&pantalla);
-#endif
+        sleep(1);
     }
 }
 
@@ -240,39 +330,40 @@ void printStats()
 {
     while (true)
     {
-#ifdef MUTEX
-        pthread_mutex_lock(&pantalla);
-#endif
-        clear();
-
-        printw("> Estadisticas < \n");
+        pantallaX.lock();
+        mvprintw(0, 0, "||> Estadisticas <||\n");
 
         for (int i = 0; i < carrera.cantCaballos; i++)
         {
-            // printw("Caballo A: Vueltas %i - %i Metros\n", caballos[i].vueltas, caballos[i].posicion);
-            printw("Caballo %c: Vueltas %i - %i Metros\n", letras[i], caballos[i].vueltas, caballos[i].posicion);
+            mvprintw(i + 1, 0, "Caballo %c: Vueltas %i - %i Metros\n", letras[i], caballos[i].vueltas, caballos[i].posicion);
         }
 
-        printw("Totales: %d vueltas - %d Metros\n", carrera.cantVueltas, carrera.canMetrosPista);
+        mvprintw(carrera.cantCaballos + 1, 0, "Totales: %d vueltas - %d Metros\n", carrera.cantVueltas, carrera.canMetrosPista);
 
         refresh();
 
+        pantallaX.unlock();
+
         sleep(1);
-#ifdef MUTEX
-        pthread_mutex_unlock(&pantalla);
-#endif
     }
 }
 
 void iniciarCarrera()
 {
+
+    Params params;
+
     for (int i = 0; i < carrera.cantCaballos; i++)
     {
         pthread_t thread;
         int threadParam = i;
         threads.push_back(thread);
 
-        int result = pthread_create(&threads[i], NULL, horseMainProcess, &i);
+        params.index = i;
+
+        int result = pthread_create(&threads[i], NULL, horseMainProcess, &params);
+
+        sleep(1);
 
         if (result != 0)
         {
@@ -288,34 +379,37 @@ void iniciarCarrera()
 int main()
 {
     initscr();
+    curs_set(0);
+    erase();
+    refresh();
+    srand(time(NULL));
 
-    // bool debugMode = true;
+#ifdef MUTEX
+    pthread_mutex_init(&pantalla, NULL); // inicializa variable pantalla tipo mutex
+#endif
 
-    // if (!debugMode)
-    // {
-    //     printTitle();
-    //     printTitle2();
-    // }
+    bool debugMode = false;
 
-    // pedirDatosCarrera();
+    if (!debugMode)
+    {
+        printTitle();
+        printTitle2();
+    }
 
-    // for (int i = 0; i < carrera.cantCaballos; i++)
-    // {
-    //     pedirDatosCaballo(i); // pedimos los datos por cada caballo
-    // }
+    pedirDatosCarrera();
 
-    printw("> tamos listeilor con los datos \n");
+    for (int i = 0; i < carrera.cantCaballos; i++)
+    {
+        pedirDatosCaballo(i); // pedimos los datos por cada caballo
+    }
 
-    // iniciarCarrera();
+    printUI();
 
-    // std::thread threadObj(printStats);
-
+    std::thread threadObj(printStats);
     std::thread threadObj02(printClock);
+    std::thread threadObj03(printChrono);
 
-    // printClock();
-    // printChrono();
-
-    // printTitle();
+    iniciarCarrera();
 
     for (int i = 0; i < threads.size(); i++)
     {
@@ -323,6 +417,10 @@ int main()
     }
 
     threadObj.join();
+    threadObj02.join();
+    threadObj03.join();
+
+    printTitle();
 
     sleep(5);
     endwin();

@@ -72,7 +72,7 @@ int main(void){
     #endif
 
     usleep(1000000/4);                      //duerme por 1/4 de segundo
-    if(drand48()<0.5) x++;                  //avanza una posicion con probabilidad 0.5
+    if(drand48()<0.3) x++;                  //avanza una posicion con probabilidad 0.5
   }
 
  getch();                                   //espera que se ingrese cualquier tecla para salir
@@ -96,6 +96,6 @@ void *funcionThread(parametros_t *parametro){
     #endif
  
     usleep(1000000/4);                      //duerme por 1/4 de segundo
-    if(drand48()<0.5) x++;                  //avanza una posicion con probabilidad 0.5
+    if(drand48()<0.3) x++;                  //avanza una posicion con probabilidad 0.5
   }
 }

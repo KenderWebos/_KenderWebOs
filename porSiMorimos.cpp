@@ -179,41 +179,26 @@ int getRandomNumber(int min, int max)
 
 void *horseMainProcess(void *param)
 {
-    //int index = param.index;
+    // int index = param.index;
 
-    Params *p = (Params *)param;
+    Params *p = (Params*)param;
     int index = p->index;
 
     Caballo caballo = caballos[index];
 
     while (true)
     {
-        if (caballos[index].posicion >= carrera.canMetrosPista * carrera.cantVueltas)
-        {
-            pantallaX.lock();
-            clear();
-            mvprintw(0, 0, "Caballo %c: Es el ganador !!\n", letras[index]);
-            mvprintw(2, 0, "precione cualquier tecla para continuar...\n");
-
-            getch();
-
-            printTitle();
-
-            endwin();
-        }
-
-        pantallaX.lock();
+        pantallaX.lock(); // aqui para
 
         caballos[index].posicion += getRandomNumber(0, 3);
+
         caballos[index].vueltas = caballos[index].posicion / carrera.canMetrosPista;
 
-        mvprintw(index + padding, 0 + caballos[index].posicion, "%c", letras[index]); // sacar el modulo de la posicion para que no se salga de la pantalla
-        // mvprintw(index + padding, 0 + caballos[index].posicion%carrera.canMetrosPista, "%c", letras[index]); // sacar el modulo de la posicion para que no se salga de la pantalla
-
+        mvprintw(index+padding, 0 + caballos[index].posicion, "%c", letras[index]);
         refresh();
 
         pantallaX.unlock();
-        usleep(1000000/2);
+        sleep(1);
     }
 
     return NULL;
@@ -327,16 +312,8 @@ void iniciarCarrera()
 int main()
 {
     initscr();
-    curs_set(0);
-    erase();
-    refresh();
-    srand(time(NULL));
 
-#ifdef MUTEX
-    pthread_mutex_init(&pantalla, NULL); // inicializa variable pantalla tipo mutex
-#endif
-
-    bool debugMode = false;
+    bool debugMode = true;
 
     if (!debugMode)
     {
