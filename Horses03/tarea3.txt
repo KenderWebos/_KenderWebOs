@@ -1,0 +1,18 @@
+10 clientes aleatorios
+{cant_productos}
+
+generar aleatoriamente
+productos{} MAX 20
+
+Cajas atienden clientes
+min 5 || max 15
+
+tiempos de espera en atencion cada cliente
+> random
+
+las cajas deben atender hasta quedar sin clientes
+
+> deben atender asincronamente <
+
+llegadas de los clientes randomicas.
+
