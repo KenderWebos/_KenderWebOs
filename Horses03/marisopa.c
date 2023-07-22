@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ncurses.h>
+#include <time.h>
 
 #define NUM_CAJAS 2
 #define MAX_CLIENTES 10

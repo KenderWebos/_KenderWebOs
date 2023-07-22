@@ -15,4 +15,3 @@ las cajas deben atender hasta quedar sin clientes
 > deben atender asincronamente <
 
 llegadas de los clientes randomicas.
-
